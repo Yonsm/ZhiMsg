@@ -1,6 +1,5 @@
 from . import get_examples
-from ..zhimi import get_miiocom
-from ..zhimi.micom.miiocmd import miio_cmd
+from ..zhimi import get_miio_service
 
 import logging
 _LOGGER = logging.getLogger(__name__)
@@ -28,7 +27,7 @@ class miaimsg:
     async def async_send(self, message, data):
 
         if not self.did:
-            devs = await get_miiocom().device_list(self.name)
+            devs = await get_miio_service().device_list(self.name)
             for dev in devs:
                 model = dev['model'].split('.')[-1]
                 if model in MODEL_SPECS:
@@ -41,8 +40,9 @@ class miaimsg:
         if message.startswith('?') or message.startswith('？'):
             if message == '?' or message == '？':
                 return get_examples(self.hass, 'miai')
-            return await miio_cmd(get_miiocom(), self.did, message[1:])
-    
+            from miservice import miio_command
+            return await miio_command(get_miio_service(), self.did, message[1:])
+
         if message.startswith('音量'):
             pos = message.find('%')
             if pos == -1:
@@ -55,14 +55,14 @@ class miaimsg:
             piid = self.spec.get('volume_piid', 1)
             try:
                 volume = int(volume)
-                code = await get_miiocom().miot_set_prop(self.did, siid, piid, volume)
+                code = await get_miio_service().miot_set_prop(self.did, siid, piid, volume)
                 if not message:
                     if code != 0:
                         return f"设置音量出错：{code}"
                     else:
                         raise Exception
             except:
-                return f"当前音量：{await get_miiocom().miot_get_prop(self.did, siid, piid)}"
+                return f"当前音量：{await get_miio_service().miot_get_prop(self.did, siid, piid)}"
 
         if message.startswith('查询') or message.startswith('执行') or message.startswith('静默'):
             siid = self.spec.get('execute_siid', 5)
@@ -77,5 +77,5 @@ class miaimsg:
         if not message:
             return "空谈误国，实干兴邦！"
 
-        result = await get_miiocom().miot_action(self.did, siid, aiid, args)
+        result = await get_miio_service().miot_action(self.did, siid, aiid, args)
         return (('执行' if len(args) == 2 else '播报') + '成功') if result.get('code') == 0 else result
