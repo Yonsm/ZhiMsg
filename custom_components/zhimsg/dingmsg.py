@@ -27,8 +27,8 @@ class dingmsg:
             url += '&timestamp=' + str(timestamp) + '&sign=' + sign
 
         _LOGGER.debug("URL: %s", url)
-        r = await self._session.post(url, json={'msgtype': 'text', 'text': {'content': message}})
-        resp = await r.json()
+        async with self._session.post(url, json={'msgtype': 'text', 'text': {'content': message}}) as r:
+            resp = await r.json()
         if resp['errcode'] != 0:
             return resp
         return '消息发送成功'
