@@ -1,21 +1,60 @@
 # ZhiMsg
-HomeAssistant Component for Message Platform
+Uniform Message Platform for HomeAssistant
 
-通用消息平台，目前支持钉钉群、小爱同学。依赖 [ZhiMi](https://github.com/Yonsm/ZhiMi)。
+HomeAssisstant 通用消息平台，功能类似 HomeAssisstant 内建的 `notify`，但支持了不同的渠道，并且多了文本输入框。目前支持钉钉群、小爱同学。
 
-1. 三种使用方式：
+## 1. 依赖准备
 
-- 调用服务，如：`zhimsh.miai`，例如我的 [automations](https://github.com/Yonsm/.homeassistant/blob/master/automations/air.yaml) 中大量使用。
-- 如果配置了 `name`，会在 Home Assistant 前端界面生成一个 `input_text` 组件，可以在此输入文本。
-- 可以上接 ZhiBot/dingbot 中联动，在钉钉群里配置代理机器人，并通过 @机器人 来使用。
+- **依赖**：[ZhiMi](https://github.com/Yonsm/ZhiMi)，请一并准备好，把 `zhimi` 放入 `custom_components`。
 
-2. 平台类型
+- **准备**：把 `zhimsg` 放入 `custom_components`。
 
-# [dingmsg](custom_components/zhibot/dingmsg.py)
+## 2. 配置方法
+
+参见[我的 Home Assistant 配置](https://github.com/yonsm/.homeassistant/)中 [configuration.yaml](https://github.com/Yonsm/.homeassistant/blob/d06def491e323fb2b89a46ee481c23642bee3a6c/configuration.yaml#L763)
+
+```
+zhimi:
+    username: !secret zhimi_username
+    password: !secret zhimi_password
+
+zhimsg:
+  - platform: ding
+    name: 钉钉信使
+    token: !secret dingbot_token
+    secret: !secret dingbot_secret
+  - platform: miai
+    name: 客厅音箱
+    did: 380205692
+    model: x08c
+  - platform: miai
+    name: 过道音箱
+    did: 89463074
+    model: lx01
+  - platform: miai
+    name: 儿童房音箱
+    did: 267090026
+    model: lx04
+```
+其中 `did` 和 `model` 可以不配置，此时要求 `name` 必须和`米家`/`小爱音箱` App 里面的名称一致。为了更快的运行速度，建议配置 `did` 和 `model`。*如何获取小爱同学的 `did` 和 `model`？参见 [MiService](https://github.com/Yonsm/MiService)*
+
+## 3. 使用方式：三种姿势
+
+- **调用服务**：如：`zhimsg.ding`，例如我的 [automations](https://github.com/Yonsm/.homeassistant/blob/master/automations/door.yaml) 中，入户门长时间开启会给钉钉群持续推送消息。如果一个平台有多个渠道，如上面有多个 `miai`，则会有多个服务名称生成。此时，可以单独调用特定渠道 `zhmsg.ke_ting_yin_xiang`；也可以调用 `zhimsg.miai`，使该平台下的所有渠道一起发出消息播报。
+
+- **文本输入框**：如果配置了 `name`，会在 Home Assistant 前端界面生成一个 `input_text` 组件，可以在此输入文本。
+
+- **对接钉钉群**：可以上接 [ZhiBot](https://github.com/Yonsm/ZhiBot)/[dingbot](https://github.com/Yonsm/ZhiBot/blob/main/custom_components/zhibot/dingbot.py) 中联动，在钉钉群里配置代理机器人，并通过 @机器人 来使用。*`为什么没有接微信`？因为微信不开放，需要伪造账号登录，暂时懒得搞了。*
+
+## 4. 平台类型
+
+*提示：如果只用了单个消息平台，可以把未使用的平台文件删除，如只用了小爱同学 TTS，可以删除掉 `dingmsg.py`。*
+
+### [dingmsg](custom_components/zhimsg/dingmsg.py)
 
 向钉钉群机器人发送消息。
 
-# [miaimsg](custom_components/zhibot/miaimsg.py)
+### [miaimsg](custom_components/zhimsg/miaimsg.py)
 
 小爱同学 TTS 播报/执行插件。支持的命令样例如下：
 
@@ -54,3 +93,5 @@ MiIO Spec: ?spec [model_keyword|type_urn]
            ?spec xiaomi.wifispeaker.lx04
            ?spec urn:miot-spec-v2:device:speaker:0000A015:xiaomi-lx04:1
 ```
+
+更多详情，参考依赖的 [MiService](https://github.com/Yonsm/MiService)
