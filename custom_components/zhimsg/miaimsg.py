@@ -7,10 +7,24 @@ _LOGGER = logging.getLogger(__name__)
 
 MODEL_SPECS = {
     # 'default': {'siid': 5, 'aiid': 1, 'execute_siid': 5, 'execute_aiid': 5, 'volume_siid': 2, 'volume_piid': 1},
-    'lx01': {},
-    'lx5a': {},
-    'lx04': {'execute_aiid': 4},
-    'x08c': {'siid': 3, 'execute_siid': 3, 'volume_siid': 4},
+    'lx01': {}, # 小爱迷你音箱
+    'lx5a': {}, # 小米小爱音箱 Play
+    'lx04': {'execute_aiid': 4}, # 小爱触屏音箱
+    'x08c': {'siid': 3, 'execute_siid': 3, 'volume_siid': 4}, # 红米小爱音箱 8 英寸
+
+    # Not tested
+    "123": {'aiid': 3, 'execute_aiid': 4}, # 未知型号，TODO: 直接执行文本参数只有一个，应该不能工作，需要调整代码
+    "l04m": {'execute_aiid': 4},
+    "l04n": {'aiid': 3, 'execute_aiid': 4},
+    "l05c": {'aiid': 3, 'execute_aiid': 4},
+    "l06a": {},
+    "l06a": {},
+    "lx05": {},
+    "lx06": {},
+    "s12": {},
+
+    # TODO
+    #"v1"/"v3": No MIoT TTS, Support MiNA API only
 }
 
 
@@ -22,7 +36,7 @@ class miaimsg:
         if self.did and not isinstance(self.did, str):
             self.did = str(self.did)
         self.name = conf.get('name')
-        self.spec = MODEL_SPECS[conf.get('model', 'lx01')]
+        self.spec = MODEL_SPECS[conf.get('model', 'lx01').split('.')[-1]]
 
     async def async_send(self, message, data):
 
