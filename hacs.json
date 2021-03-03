@@ -1,0 +1,7 @@
+{
+  "name": "Zhi Message Platform",
+  "domains": ["zhimsg"],
+  "country": ["CN"],
+  "render_readme": true,
+  "iot_class": "Assumed State"
+}

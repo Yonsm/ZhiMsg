@@ -1,0 +1,8 @@
+{
+	"domain": "zhimsg",
+	"name": "Zhi Message Platform",
+	"documentation": "https://github.com/Yonsm/ZhiMsg",
+	"requirements": [],
+	"dependencies": ["zhimi"],
+	"codeowners": ["@Yonsm"]
+}
