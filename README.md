@@ -1,4 +1,4 @@
-# ZhiMsg
+# [https://github.com/Yonsm/ZhiMsg](https://github.com/Yonsm/ZhiMsg)
 
 Uniform Message Platform for HomeAssistant
 
@@ -12,7 +12,7 @@ HomeAssisstant 通用消息平台，功能类似 HomeAssisstant 内建的 `notif
 
 ## 2. 配置方法
 
-参见[我的 Home Assistant 配置](https://github.com/Yonsm/.homeassistant)中 [configuration.yaml](https://github.com/Yonsm/.homeassistant/blob/main/configuration.yaml)
+参见 [我的 Home Assistant 配置](https://github.com/Yonsm/.homeassistant) 中 [configuration.yaml](https://github.com/Yonsm/.homeassistant/blob/main/configuration.yaml)
 
 ```
 zhimi:

@@ -2,6 +2,7 @@
 	"domain": "zhimsg",
 	"name": "Zhi Message Platform",
 	"documentation": "https://github.com/Yonsm/ZhiMsg",
+	"version": "1.0.1",
 	"requirements": [],
 	"dependencies": ["zhimi"],
 	"codeowners": ["@Yonsm"]
