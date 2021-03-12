@@ -6,18 +6,18 @@ HomeAssisstant 通用消息平台，功能类似 HomeAssisstant 内建的 `notif
 
 ## 1. 安装准备
 
--   **依赖**：[ZhiMi](https://github.com/Yonsm/ZhiMi)，请一并准备好，把 `zhimi` 放入 `custom_components`。
+- **依赖**：[ZhiMi](https://github.com/Yonsm/ZhiMi)，请一并准备好，把 `zhimi` 放入 `custom_components`。
 
--   **安装**：把 `zhimsg` 放入 `custom_components`；也支持在 [HACS](https://hacs.xyz/) 中添加自定义库的方式安装。
+- **安装**：把 `zhimsg` 放入 `custom_components`；也支持在 [HACS](https://hacs.xyz/) 中添加自定义库的方式安装。
 
 ## 2. 配置方法
 
 参见 [我的 Home Assistant 配置](https://github.com/Yonsm/.homeassistant) 中 [configuration.yaml](https://github.com/Yonsm/.homeassistant/blob/main/configuration.yaml)
 
-```
+```yaml
 zhimi:
-    username: !secret zhimi_username
-    password: !secret zhimi_password
+  username: !secret zhimi_username
+  password: !secret zhimi_password
 
 zhimsg:
   - platform: ding
@@ -44,21 +44,21 @@ _如何获取小爱同学的 `did` 和 `model`？_ 参见 [MiService](https://gi
 
 ## 3. 使用方式：三种姿势
 
--   **调用服务**：如：`zhimsg.ding`，例如我的 [automations](https://github.com/Yonsm/.homeassistant/blob/master/automations/door.yaml) 中，入户门长时间开启会给钉钉群持续推送消息。如果一个平台有多个渠道，如上面有多个 `miai`，则会有多个服务名称生成。此时，可以单独调用特定渠道 `zhmsg.ke_ting_yin_xiang`；也可以调用 `zhimsg.miai`，使该平台下的所有渠道一起发出消息播报。
+- **调用服务**：如：`zhimsg.ding`，例如我的 [automations](https://github.com/Yonsm/.homeassistant/blob/master/automations/door.yaml) 中，入户门长时间开启会给钉钉群持续推送消息。如果一个平台有多个渠道，如上面有多个 `miai`，则会有多个服务名称生成。此时，可以单独调用特定渠道 `zhmsg.ke_ting_yin_xiang`；也可以调用 `zhimsg.miai`，使该平台下的所有渠道一起发出消息播报。
 
--   **文本输入框**：如果配置了 `name`，会在 Home Assistant 前端界面生成一个 `input_text` 组件，可以在此输入文本。
+- **文本输入框**：如果配置了 `name`，会在 Home Assistant 前端界面生成一个 `input_text` 组件，可以在此输入文本。
 
--   **对接钉钉群**：可以上接 [ZhiBot](https://github.com/Yonsm/ZhiBot)/[dingbot](https://github.com/Yonsm/ZhiBot/blob/main/custom_components/zhibot/dingbot.py) 中联动，在钉钉群里配置代理机器人，并通过 @机器人 来使用。_`为什么没有接微信`？因为微信不开放，需要伪造账号登录，暂时懒得搞了。_
+- **对接钉钉群**：可以上接 [ZhiBot](https://github.com/Yonsm/ZhiBot)/[dingbot](https://github.com/Yonsm/ZhiBot/blob/main/custom_components/zhibot/dingbot.py) 中联动，在钉钉群里配置代理机器人，并通过 @机器人 来使用。_`为什么没有接微信`？因为微信不开放，需要伪造账号登录，暂时懒得搞了。_
 
 ## 4. 平台类型
 
-_提示：如果只用了单个消息平台，可以把未使用的平台文件删除，如只用了小爱同学 TTS，可以删除掉 `dingmsg.py`。_
+_提示：如果只用了单个消息平台，可以把未使用的平台文件删除，如只用了小爱同学 TTS，可以删除掉 `ding.py`。_
 
-### 钉钉群消息 [dingmsg](https://github.com/Yonsm/ZhiMsg/blob/main/custom_components/zhimsg/dingmsg.py)
+### 钉钉群消息 [dingmsg](https://github.com/Yonsm/ZhiMsg/blob/main/custom_components/zhimsg/ding.py)
 
 向钉钉群机器人发送消息。
 
-### 小爱同学语音播报/执行 [miaimsg](https://github.com/Yonsm/ZhiMsg/blob/main/custom_components/zhimsg/miaimsg.py)
+### 小爱同学语音播报/执行 [miaimsg](https://github.com/Yonsm/ZhiMsg/blob/main/custom_components/zhimsg/miai.py)
 
 小爱同学 TTS 播报/执行插件。支持的命令样例如下：
 
@@ -100,9 +100,9 @@ MiIO Spec: ?spec [model_keyword|type_urn]
 
 ## 5. 参考
 
--   [ZhiMi](https://github.com/Yonsm/ZhiMi)
--   [ZhiBot](https://github.com/Yonsm/ZhiBot)
--   [MiService](https://github.com/Yonsm/MiService)
--   [Yonsm.NET](https://yonsm.github.io)
--   [Hassbian.com](https://bbs.hassbian.com/thread-12320-1-1.html)
--   [Yonsm's .homeassistant](https://github.com/Yonsm/.homeassistant)
+- [ZhiMi](https://github.com/Yonsm/ZhiMi)
+- [ZhiBot](https://github.com/Yonsm/ZhiBot)
+- [MiService](https://github.com/Yonsm/MiService)
+- [Yonsm.NET](https://yonsm.github.io)
+- [Hassbian.com](https://bbs.hassbian.com/thread-12320-1-1.html)
+- [Yonsm's .homeassistant](https://github.com/Yonsm/.homeassistant)
