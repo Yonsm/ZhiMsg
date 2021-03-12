@@ -40,9 +40,8 @@ async def async_setup(hass, config):
         platform = service.split('_')[0]
         Class = Classes.get(platform)
         if Class is None:
-            attr = platform + 'msg'
-            module = import_module('.' + attr, __package__)
-            Class = getattr(module, attr)
+            module = import_module('.' + platform, __package__)
+            Class = getattr(module, platform + 'msg')
             Classes[platform] = Class
             SERVICES[platform] = []
             hass.services.async_register(DOMAIN, platform, async_call, schema=SERVICE_SCHEMA)

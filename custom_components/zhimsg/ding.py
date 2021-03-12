@@ -26,7 +26,7 @@ class dingmsg:
             sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))
             url += '&timestamp=' + str(timestamp) + '&sign=' + sign
 
-        _LOGGER.debug("URL: %s", url)
+        #_LOGGER.debug("URL: %s", url)
         async with self._session.post(url, json={'msgtype': 'text', 'text': {'content': message}}) as r:
             resp = await r.json()
         if resp['errcode'] != 0:
