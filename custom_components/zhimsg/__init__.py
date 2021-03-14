@@ -61,7 +61,7 @@ async def async_setup(hass, config):
             hass.services.async_register(DOMAIN, service, async_call, schema=SERVICE_SCHEMA)
 
     if len(entities):
-        await async_add_input_entities(hass, config, entities)
+        await async_add_input_entities(hass, entities)
     return True
 
 
@@ -103,6 +103,7 @@ async def async_input_changed(event):
     data = event.data
     old_state = data.get('old_state')
     new_state = data.get('new_state')
+    _LOGGER.error('HAHA: %s!!!', new_state.entity_id)
     if old_state and new_state:
         message = new_state.state
         if message != old_state.state:
@@ -111,17 +112,7 @@ async def async_input_changed(event):
             await async_send(service, message)
 
 
-async def async_add_input_entities(hass, config, entities):
-    if 'input_text' not in config:
-        return await _async_add_input_entities(hass, entities)
-
-    # 如果配置了文本输入，则必须延迟等待，并复用现有的组件来添加
-    async def _delay_add_input_entities(timestamp=None):
-        await _async_add_input_entities(hass, entities)
-    hass.helpers.event.async_call_later(5, _delay_add_input_entities)
-
-
-async def _async_add_input_entities(hass, entities):
+async def async_add_input_entities(hass, entities):
     from homeassistant.helpers.entity_component import EntityComponent
     component = hass.data.get('entity_components', {}).get('input_text')
     if component is None:
