@@ -103,7 +103,6 @@ async def async_input_changed(event):
     data = event.data
     old_state = data.get('old_state')
     new_state = data.get('new_state')
-    _LOGGER.error('HAHA: %s!!!', new_state.entity_id)
     if old_state and new_state:
         message = new_state.state
         if message != old_state.state:
