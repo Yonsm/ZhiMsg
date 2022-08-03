@@ -35,6 +35,7 @@ class miaimsg:
         self.did = conf.get('did')
         if self.did and not isinstance(self.did, str):
             self.did = str(self.did)
+        self.did2 = None
         self.name = conf.get('name')
         self.spec = get_model_spec(conf.get('model'))
 
@@ -43,15 +44,24 @@ class miaimsg:
         if not self.did:
             devs = await miio_service.device_list(self.name)
             if not devs:
-                raise Exception('已支持的音箱列表中找不到：' + self.name)
+                raise Exception('找不到设备：' + self.name)
             self.did = devs[0]['did']
             self.spec = get_model_spec(devs[0]['model'])
 
+        if message.starts('!'):
+            if len(message) == 1:
+                return f"当前设备标识：{self.did2 or self.did}）"
+            devs = await miio_service.device_list(message[1:])
+            if not devs:
+                raise Exception('找不到设备：' + message[1:])
+            self.did2 = devs[0]['did']
+            return f"已切换到：{devs[0]['name']}（设备标识：{self.did2}）"
+
         if message.startswith('?') or message.startswith('？'):
-            if message == '?' or message == '？':
+            if len(message) == 1:
                 return get_examples(self.hass, 'miai')
             from miservice import miio_command
-            return await miio_command(miio_service, self.did, message[1:])
+            return await miio_command(miio_service, self.did2 or self.did, message[1:])
 
         if message.startswith('音量'):
             pos = message.find('%')
@@ -65,14 +75,14 @@ class miaimsg:
             piid = self.spec.get('volume_piid', 1)
             try:
                 volume = int(volume)
-                code = await miio_service.miot_set_prop(self.did, siid, piid, volume)
+                code = await miio_service.miot_set_prop(self.did, (siid, piid), volume)
                 if not message:
                     if code != 0:
                         return f"设置音量出错：{code}"
                     else:
                         raise Exception
             except:
-                return f"当前音量：{await miio_service.miot_get_prop(self.did, siid, piid)}"
+                return f"当前音量：{await miio_service.miot_get_prop(self.did, (siid, piid))}"
 
         if message.startswith('查询') or message.startswith('执行') or message.startswith('静默'):
             siid = self.spec.get('execute_siid', 5)
@@ -87,5 +97,5 @@ class miaimsg:
         if not message:
             return "空谈误国，实干兴邦！"
 
-        result = await miio_service.miot_action(self.did, siid, aiid, args)
+        result = await miio_service.miot_action(self.did, (siid, aiid), args)
         return (('执行' if len(args) == 2 else '播报') + '成功') if result.get('code') == 0 else result
