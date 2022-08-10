@@ -48,7 +48,7 @@ class miaimsg:
             self.did = devs[0]['did']
             self.spec = get_model_spec(devs[0]['model'])
 
-        if message.starts('!'):
+        if message.startswith('!'):
             if len(message) == 1:
                 return f"当前设备标识：{self.did2 or self.did}）"
             devs = await miio_service.device_list(message[1:])
