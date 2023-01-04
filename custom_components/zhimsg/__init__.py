@@ -95,7 +95,7 @@ def create_input_entity(hass, name, service, initial_text):
     }
     entity = InputText(config)
     entity.entity_id = f"input_text.{service}"
-    #entity.editable = False
+    entity.editable = False
     return entity
 
 
