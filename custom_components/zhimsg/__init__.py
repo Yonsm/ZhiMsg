@@ -101,7 +101,7 @@ def create_input_entity(hass, name, service, initial_text):
     return entity
 
 
-async def async_input_changed(event):
+async def async_input_changed(event, old_state=None, new_state=None):
     data = event.data
     old_state = data.get('old_state')
     new_state = data.get('new_state')
