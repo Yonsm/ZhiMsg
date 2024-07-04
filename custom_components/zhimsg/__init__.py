@@ -6,6 +6,7 @@ from homeassistant.util import slugify
 from homeassistant.util.yaml import load_yaml
 from homeassistant.components.input_text import (InputText, CONF_MIN, CONF_MIN_VALUE, CONF_MAX, CONF_MAX_VALUE, CONF_INITIAL, MODE_TEXT, SERVICE_SET_VALUE, ATTR_VALUE)
 from homeassistant.const import (CONF_ID, CONF_NAME, CONF_ICON, CONF_MODE)
+from homeassistant.helpers.event import async_track_state_change_event
 
 import logging
 _LOGGER = logging.getLogger(__name__)
@@ -30,7 +31,7 @@ def get_examples(hass, platform):
     return get_example(load_desc(hass), platform).replace('|', '\n')
 
 
-async def async_setup(hass, config):
+def setup(hass, config):
     global SERVICES
     entities = []
     Classes = {}
@@ -44,7 +45,7 @@ async def async_setup(hass, config):
             Class = getattr(module, platform + 'msg')
             Classes[platform] = Class
             SERVICES[platform] = []
-            hass.services.async_register(DOMAIN, platform, async_call, schema=SERVICE_SCHEMA)
+            hass.services.register(DOMAIN, platform, async_call, schema=SERVICE_SCHEMA)
             _LOGGER.debug("Platform Service as %s.%s", DOMAIN, platform)
         instance = Class(hass, conf)
         SERVICES[platform].append(instance)
@@ -58,10 +59,11 @@ async def async_setup(hass, config):
         if service not in SERVICES:
             SERVICES[service] = instance
             _LOGGER.debug("Service as %s.%s", DOMAIN, service)
-            hass.services.async_register(DOMAIN, service, async_call, schema=SERVICE_SCHEMA)
+            hass.services.register(DOMAIN, service, async_call, schema=SERVICE_SCHEMA)
 
     if len(entities):
-        await async_add_input_entities(hass, entities)
+        from asyncio import run_coroutine_threadsafe
+        run_coroutine_threadsafe(async_add_input_entities(hass, entities), hass.loop)
     return True
 
 
@@ -118,4 +120,4 @@ async def async_add_input_entities(hass, entities):
         component = EntityComponent(_LOGGER, 'input_text', hass)
         component.async_register_entity_service(SERVICE_SET_VALUE, {vol.Required(ATTR_VALUE): cv.string}, 'async_set_value')
     await component.async_add_entities(entities)
-    hass.helpers.event.async_track_state_change_event([entity.entity_id for entity in entities], async_input_changed)
+    async_track_state_change_event(hass, [entity.entity_id for entity in entities], async_input_changed)
